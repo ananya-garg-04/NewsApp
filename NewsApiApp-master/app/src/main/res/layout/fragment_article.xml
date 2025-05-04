@@ -1,135 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardElevation="10dp"
-    app:cardCornerRadius="10dp"
-    android:padding="10dp">
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    tools:context=".ui.FragmentArticle">
 
 
-    <androidx.cardview.widget.CardView
-        android:layout_margin="10dp"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:fillViewport="true">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:paddingBottom="80dp">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/imageCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         app:cardCornerRadius="10dp"
-        app:cardElevation="10dp">
+        app:cardElevation="8dp">
 
         <ImageView
+            android:id="@+id/articleImage"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:id="@+id/articleImage"/>
-
-
-
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/article_image_description"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     </androidx.cardview.widget.CardView>
 
 
     <androidx.cardview.widget.CardView
-        android:layout_margin="10dp"
+        android:id="@+id/contentCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="8dp">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="10dp">
+        android:padding="16dp"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- Source TextView -->
+        <TextView
+            android:id="@+id/tvSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Source Name"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
+            android:textColor="?android:attr/textColorSecondary"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/listDivider"/>
+
+        <!-- Title TextView -->
+        <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"
+            tools:text="Very Long Article Title Example Which Might Wrap"
+            android:layout_marginBottom="8dp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            android:orientation="vertical">
+        <!-- Description TextView -->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textSize="17sp"
+            android:lineSpacingMultiplier="1.1"
+            tools:text="This is a sample description of the news article to see how it looks when populated with some text content." />
 
-            <TextView
-                android:id="@+id/tvSource"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Source"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp"
-                android:textColor="@android:color/black"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/listDivider"/>
 
+        <!-- Published Date TextView -->
+        <TextView
+            android:id="@+id/tvPublishedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Published Date"
+            android:textColor="?android:attr/textColorSecondary"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/hsv"
-                android:layout_marginBottom="2dp"
-                android:background="?android:attr/listDivider"/>
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:text="TITLE"
-                android:layout_marginBottom="8dp"
-                android:textColor="@android:color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="5"
-                android:layout_marginBottom="8dp"
-                android:textSize="17sp"
-                android:text="DESCRIPTION" />
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tvDescription"
-                android:layout_marginBottom="2dp"
-                android:background="?android:attr/listDivider"/>
-
-            <TextView
-                android:id="@+id/tvPublishedAt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PUBLISHED AT"
-                android:textColor="@android:color/black"/>
-
-        </LinearLayout>
-
-
-
-
-
-
-    </androidx.cardview.widget.CardView>
-
-
-
-
-
-
-
-</LinearLayout>
-
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_favorite"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="20dp"
-        app:fabSize="normal"/>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
 
+    </LinearLayout>
 
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Save Floating Action Button -->
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+android:id="@+id/fab_save"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginEnd="16dp"
+android:layout_marginBottom="16dp"
+android:src="@drawable/ic_favorite"
+app:fabSize="normal"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+android:contentDescription="@string/save_article" />
+
+    <!-- Speak Floating Action Button -->
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+android:id="@+id/fab_speak"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginStart="16dp"
+android:layout_marginBottom="16dp"
+android:src="@drawable/ic_microphone"
+app:fabSize="normal"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:tint="@android:color/white"
+android:contentDescription="@string/read_article_aloud" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
