@@ -25,5 +25,12 @@
         android:icon="@drawable/delete"/>
 
 
+    <item
+        android:id="@+id/action_voice_search"
+        android:title="Voice Search"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_mic" />
+
+
 
 </menu>
