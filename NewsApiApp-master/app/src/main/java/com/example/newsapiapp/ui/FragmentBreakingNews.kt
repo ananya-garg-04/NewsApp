@@ -1,5 +1,6 @@
 package com.example.newsapiapp.ui
 
+
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -205,7 +206,7 @@ class FragmentBreakingNews : Fragment(), ItemClickListener<Article>, MenuProvide
                 Log.d(TAG_FRAGMENT, "Success - Received ${articles.size} articles")
                 fullArticleList = articles // Update the cache for search/filtering
                 // Re-apply any existing filter when new data arrives
-                filterArticles(searchView?.query?.toString() ?: "")
+                newFilterItems(searchView?.query?.toString() ?: "")
                 if (articles.isNotEmpty() && searchView?.query.isNullOrBlank()) {
                     rv.scrollToPosition(0) // Scroll to top for new data if no filter active
                 }
@@ -419,7 +420,7 @@ class FragmentBreakingNews : Fragment(), ItemClickListener<Article>, MenuProvide
                         // 2. Expand the search view
                         searchView?.isIconified = false
 
-                        filterArticles(spokenText)
+                        newFilterItems(spokenText)
                     }
                 } else {
                     Log.w(TAG_SPEECH, "onResults: Received null or empty text.")
@@ -479,7 +480,11 @@ class FragmentBreakingNews : Fragment(), ItemClickListener<Article>, MenuProvide
         // Inflate the menu resource (which should NOW contain the voice search item)
         menuInflater.inflate(R.menu.menu, menu)
 
-        // Find the search item and configure the SearchView
+        val deleteIcon = menu.findItem(R.id.deleteAll)
+        deleteIcon?.isVisible = false // Initially hide delete if it exists
+
+        val savedIcon = menu.findItem(R.id.savedNewsFrag)
+        // savedIcon?.isVisible = true // Initial visibility managed by expand listener
         val searchItem = menu.findItem(R.id.searchNews)
         searchView = searchItem?.actionView as? SearchView
 
@@ -499,37 +504,58 @@ class FragmentBreakingNews : Fragment(), ItemClickListener<Article>, MenuProvide
                 val trimmedQuery = query?.trim() ?: ""
                 Log.d(TAG_FRAGMENT, "SearchView - onQueryTextSubmit: '$trimmedQuery'")
                 searchView?.clearFocus() // Hide keyboard
-                filterArticles(trimmedQuery) // Filter the list based on the query
+                newFilterItems(trimmedQuery)
+                // Filter the list based on the query
+                newFilterItems(query)
                 return true // Indicate query was handled
             }
 
             // Called whenever the text in the SearchView changes
             override fun onQueryTextChange(newText: String?): Boolean {
 
+                newFilterItems(newText)
                 return true // Indicate change was handled (even if doing nothing)
             }
         })
 
-        // Restore full list when search view is closed (e.g., back button or 'X')
-        searchView?.setOnCloseListener {
-            Log.d(TAG_FRAGMENT, "SearchView closed.")
-            // Don't clear focus here, allow default close to iconify
-            filterArticles("") // Restore original list by filtering with empty string
-            false
-        }
-
-        searchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && searchView?.query?.toString().isNullOrBlank()) {
-                Log.d(TAG_FRAGMENT, "SearchView focus lost and query empty, restoring list.")
-                filterArticles("")
+        searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                savedIcon?.isVisible = false
+                deleteIcon?.isVisible = false // Also hide delete when searching
+                // ** ADDITION: Also hide the SPEECH icon if needed when search expands **
+                // menu.findItem(R.id.your_speech_mic_id)?.isVisible = false
+                return true
             }
-        }
+            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                savedIcon?.isVisible = true
+                deleteIcon?.isVisible = false // Keep delete hidden
+                // ** ADDITION: Restore visibility of the SPEECH icon if needed when search collapses **
+                // menu.findItem(R.id.your_speech_mic_id)?.isVisible = true
+
+                // Optional: Clear filter when search is closed
+                // newFilterItems(null)
+                return true
+            }
+        })
+        // --- End setup from SAVED NEWS version ---
+
+
+        // --- Setup items SPECIFIC to the SPEECH version ---
+        // Example: Find the mic icon and set it up if necessary
+        val speechMicItem = menu.findItem(R.id.action_voice_search) // ** Replace with your actual mic ID **
+        // If the speech icon needs specific setup in onCreateMenu, add it here.
+        // Often, the click handling is done purely in onMenuItemSelected.
+
     }
+
+        // Restore full list when search view is closed (e.g., back button or 'X')
+
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         Log.d(TAG_FRAGMENT, "onMenuItemSelected: ${menuItem.title} (ID: ${menuItem.itemId})")
         // Handle clicks on items in the toolbar menu
         return when (menuItem.itemId) {
+
             // --- HANDLE VOICE SEARCH CLICK HERE ---
             R.id.action_voice_search -> {
                 Log.d(TAG_FRAGMENT, "Voice Search menu item selected!")
@@ -539,12 +565,16 @@ class FragmentBreakingNews : Fragment(), ItemClickListener<Article>, MenuProvide
             }
 
             R.id.savedNewsFrag -> {
-                Log.d(TAG_FRAGMENT, "Saved News menu item selected.")
-                // TODO: Implement navigation to Saved News Fragment using NavController
-
-                Toast.makeText(context, "Navigate to Saved News (Not Implemented)", Toast.LENGTH_SHORT).show()
-                true
+                try {
+                    // Ensure the action ID is correct in your nav_graph.xml
+                    view?.findNavController()?.navigate(R.id.action_fragmentBreakingNews_to_fragmentSavedNews)
+                } catch (e: Exception) {
+                    Log.e("FragmentBreakingNews", "Navigation to SavedNews failed", e)
+                    Toast.makeText(context, "Could not open saved news", Toast.LENGTH_SHORT).show()
+                }
+                true // Handled
             }
+
             R.id.deleteAll -> {
                 Log.d(TAG_FRAGMENT, "Delete All menu item selected.")
                 // TODO: Implement delete logic (e.g., show confirmation dialog, call ViewModel to delete all)
@@ -560,41 +590,20 @@ class FragmentBreakingNews : Fragment(), ItemClickListener<Article>, MenuProvide
     }
 
 
-    private fun filterArticles(query: String) {
-        val trimmedQuery = query.trim()
-        Log.d(TAG_FRAGMENT, "--- filterArticles START --- Query: '$trimmedQuery'")
-        Log.d(TAG_FRAGMENT, "filterArticles: Current fullArticleList size = ${fullArticleList.size}")
 
-
-        if (!::newsAdapter.isInitialized) {
-            Log.e(TAG_FRAGMENT, "filterArticles: newsAdapter is not initialized! Cannot filter.")
-            return
-        }
-
-
-        val filteredList = if (trimmedQuery.isBlank()) {
-            Log.d(TAG_FRAGMENT, "filterArticles: Query is blank, showing full list.")
-            fullArticleList // Show all if query is empty
+    // Make sure this function exists and works with your ArticleAdapter
+    private fun newFilterItems(query: String?) {
+        val filteredList = if (query.isNullOrBlank()) {
+            fullArticleList // Make sure fullArticleList is maintained
         } else {
-            Log.d(TAG_FRAGMENT, "filterArticles: Filtering list for '$trimmedQuery'...")
             fullArticleList.filter { article ->
-
-                (article.title?.contains(trimmedQuery, ignoreCase = true) == true) ||
-                        (article.description?.contains(trimmedQuery, ignoreCase = true) == true) ||
-                        (article.source?.name?.contains(trimmedQuery, ignoreCase = true) == true)
+                (article.title?.contains(query, ignoreCase = true) == true) ||
+                        (article.description?.contains(query, ignoreCase = true) == true)
             }
         }
-        Log.d(TAG_FRAGMENT, "filterArticles: Filtering resulted in ${filteredList.size} articles.")
-
-
-        view?.post {
-            Log.d(TAG_FRAGMENT, "filterArticles (post): Calling newsAdapter.setList() with ${filteredList.size} items")
-            newsAdapter.setList(filteredList)
-            if (filteredList.isEmpty() && trimmedQuery.isNotEmpty()) {
-
-                Log.d(TAG_FRAGMENT, "filterArticles (post): No results found for '$trimmedQuery'")
-            }
-        }
-        Log.d(TAG_FRAGMENT, "--- filterArticles END ---")
+        // Ensure filteredList method exists in adapter and accepts List<Article>
+        // Make sure your adapter HAS this 'filteredList' method or adapt this call
+        newsAdapter.setList(ArrayList(filteredList))
     }
+
 }
