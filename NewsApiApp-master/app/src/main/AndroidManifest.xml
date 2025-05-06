@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.newsapiapp">  <!-- Make sure your package name is correct here -->
+    package="com.example.newsapiapp">
 
-    <!-- Permissions should be direct children of the manifest tag -->
+    <!-- Permissions remain the same -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <!-- Queries remain the same -->
     <queries>
         <intent>
             <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
         </intent>
     </queries>
 
-
-    <!-- Only ONE application tag -->
     <application
         android:name=".mvvm.NewsApplication"
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.NewsApiApp"
+    android:allowBackup="true"
+    android:dataExtractionRules="@xml/data_extraction_rules"
+    android:fullBackupContent="@xml/backup_rules"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:supportsRtl="true"
+    android:theme="@style/Theme.NewsApiApp"
     tools:targetApi="31">
-
 
     <activity
         android:name=".MainActivity"
-        android:theme="@style/Theme.App.SplashScreen"
+
+    android:theme="@style/Theme.App.SplashScreen"
     android:exported="true">
     <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -37,7 +37,7 @@
     </intent-filter>
 </activity>
 
-
+    <!-- Define other activities, services, receivers here if you have them -->
 
     </application>
 

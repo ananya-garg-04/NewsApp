@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Palette -->
     <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="red">#f44336</color>
+    <color name="purple_500">#FF6200EE</color> <!-- Often Primary in Light -->
+    <color name="purple_700">#FF3700B3</color> <!-- Often PrimaryVariant in Light -->
+    <color name="teal_200">#FF03DAC5</color> <!-- Often Secondary/Accent -->
+    <color name="teal_700">#FF018786</color> <!-- Often SecondaryVariant -->
+
+    <!-- Standard Colors -->
+    <color name="black">#FF000000</color> <!-- Common Text color in Light -->
+    <color name="white">#FFFFFFFF</color> <!-- Common Background color in Light -->
+
+    <!-- Custom/Specific Colors -->
+    <color name="red">#f44336</color> <!-- Error or Accent -->
+
+    <!-- Add any other specific colors needed for your LIGHT theme -->
 
 </resources>
