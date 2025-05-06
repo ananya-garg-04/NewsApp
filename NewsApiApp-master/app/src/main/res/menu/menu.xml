@@ -2,35 +2,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
-    <item
-        android:id="@+id/savedNewsFrag"
-        android:title="Saved News"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_favorite"/>
-
-
+    <!-- Search Icon (using SearchView) -->
     <item
         android:id="@+id/searchNews"
         android:title="Search News"
-        app:showAsAction="always"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        android:icon="@drawable/ic_search"/>
+        android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom|collapseActionView"
+    app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
-    <item
-        android:id="@+id/deleteAll"
-        android:title="Delete News"
-        app:showAsAction="always"
-        android:icon="@drawable/delete"/>
-
-
+    <!-- Voice Search Icon -->
     <item
         android:id="@+id/action_voice_search"
         android:title="Voice Search"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_mic" />
+        android:icon="@drawable/ic_mic"
+        app:showAsAction="ifRoom" /> <!-- Show if room -->
 
+    <!-- Theme Switch -->
+    <item
+        android:id="@+id/action_theme_switch"
+        android:title="@string/menu_theme_switch_title"
+        app:showAsAction="ifRoom"
+    app:actionViewClass="androidx.appcompat.widget.SwitchCompat" />
 
+    <!-- Removed savedNewsFrag (Heart) -->
+    <!-- Removed deleteAll (Will be added by FragmentSavedNews) -->
 
 </menu>

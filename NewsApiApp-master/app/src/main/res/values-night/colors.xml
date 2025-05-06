@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Palette (Dark Mode Values) -->
+    <!-- Use the SAME names as values/colors.xml -->
+
+    <!-- Primary colors for Dark Theme (often lighter/brighter) -->
+    <color name="purple_200">#FFBB86FC</color> <!-- Your theme uses this as primary -->
+    <color name="purple_500">#FF6200EE</color> <!-- Keep defined, maybe for specific elements -->
+    <color name="purple_700">#FF3700B3</color> <!-- Your theme uses this as primaryVariant -->
+
+    <!-- Secondary/Accent colors for Dark Theme -->
+    <color name="teal_200">#FF03DAC5</color> <!-- Your theme uses this as secondary/variant -->
+    <color name="teal_700">#FF018786</color> <!-- Keep defined, maybe for specific elements -->
+
+    <!-- Standard Colors (Flipped for Dark Mode) -->
+    <!-- Black is often the background/surface color in dark mode -->
+    <color name="black">#FF000000</color>
+    <!-- Or use Material Design's recommended dark surface: <color name="black">#121212</color> -->
+
+    <!-- White is often the primary text color on dark backgrounds -->
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Custom/Specific Colors -->
+    <!-- Red for errors often stays the same for consistent meaning -->
+    <color name="red">#f44336</color>
+
+    <!-- Define any other colors from your values/colors.xml here -->
+    <!-- with hex codes appropriate for a dark theme. -->
+
+</resources>

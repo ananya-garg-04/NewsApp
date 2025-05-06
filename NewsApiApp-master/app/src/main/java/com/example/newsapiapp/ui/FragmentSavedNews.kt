@@ -1,8 +1,12 @@
-// File: FragmentSavedNews.kt
-@file:Suppress("DEPRECATION") // Keep if needed for other parts, but MenuProvider avoids some deprecation
+//@file:Suppress("DEPRECATION") // Keep if needed
 
 package com.example.newsapiapp.ui
 
+// Add necessary imports back
+import android.content.res.Configuration
+import com.example.newsapiapp.ThemeHelper
+
+// Other existing imports...
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -11,124 +15,122 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-// findFragment is usually not needed directly like this
-// import androidx.fragment.app.findFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapiapp.R
-// Import the specific adapter
 import com.example.newsapiapp.adapters.SavedArticleAdapter
-// Import SavedArticle if needed directly (though handled by adapter/viewmodel)
-// import com.example.newsapiapp.db.SavedArticle
+import com.example.newsapiapp.databinding.FragmentSavedNewsBinding // Use View Binding
 import com.example.newsapiapp.mvvm.NewsDatabase
 import com.example.newsapiapp.mvvm.NewsRepo
 import com.example.newsapiapp.mvvm.NewsViewModel
 import com.example.newsapiapp.mvvm.NewsViewModelFac
 
-// Implement only MenuProvider, not the click listener (unless needed)
+
 class FragmentSavedNews : Fragment(), MenuProvider {
 
-    // Use lateinit cautiously or initialize differently
+    // --- View Binding Setup ---
+    private var _binding: FragmentSavedNewsBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var viewModel: NewsViewModel
     private lateinit var newsAdapter: SavedArticleAdapter
-    private lateinit var rv: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_saved_news, container, false)
+    ): View {
+        _binding = FragmentSavedNewsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Use safe cast for activity access
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Saved News"
+        setupMenu()
+        setupViewModel()
+        setupRecyclerView()
+        observeSavedNews()
 
-        // Setup MenuProvider
+        // --- ADD THEME SWITCH LOGIC BACK for the switch in this fragment's layout ---
+        setupThemeSwitch()
+    }
+
+    // --- Helper function for Menu (inflates ONLY saved_news_menu) ---
+    private fun setupMenu() {
         val menuHost: MenuHost = requireActivity()
-        // Use RESUMED state for fragments usually
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
 
-        // REMOVED: setHasOptionsMenu(true) - Not needed with MenuProvider
-
-        rv = view.findViewById(R.id.rvSavedNews)
-
-        // Setup ViewModel
+    // --- Helper function for ViewModel ---
+    private fun setupViewModel() {
         val dao = NewsDatabase.getInstance(requireActivity()).newsDao()
         val repository = NewsRepo(dao)
         val factory = NewsViewModelFac(repository, requireActivity().application)
         viewModel = ViewModelProvider(this, factory)[NewsViewModel::class.java]
+    }
 
-        // Initialize Adapter (data will be set via observer)
+    // --- Helper function for RecyclerView ---
+    private fun setupRecyclerView() {
         newsAdapter = SavedArticleAdapter()
-        // Setup RecyclerView before observing data
-        setUpRecyclerView()
+        binding.rvSavedNews.apply {
+            adapter = newsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        // Add Item Click Listener setup here if needed
+    }
 
-        // Observe LiveData for saved news
-        // Ensure getSavedNews is the correct LiveData<List<SavedArticle>> in ViewModel
+    // --- ADD THEME SWITCH SETUP FUNCTION BACK ---
+    private fun setupThemeSwitch() {
+        // Access switch via binding using the ID from the XML
+        val themeSwitch = binding.switchThemeFragment // Use the ID you set in XML
+
+        // Set initial state
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        themeSwitch.isChecked = (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
+
+        // Set listener
+        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val newTheme = if (isChecked) ThemeHelper.DARK_MODE else ThemeHelper.LIGHT_MODE
+            ThemeHelper.saveTheme(requireContext(), newTheme)
+            ThemeHelper.applyTheme(newTheme)
+            // Recreate activity to apply theme changes fully
+            activity?.recreate()
+        }
+    }
+
+    // --- Helper function for Observing Data ---
+    private fun observeSavedNews() {
         viewModel.getSavedNews.observe(viewLifecycleOwner, Observer { savedArticles ->
-            // ** FIX: Use the correct method name 'setList' **
-            newsAdapter.setList(savedArticles ?: emptyList()) // Handle potential null list
-            // No need to call setUpRecyclerView() again here, just update data
+            newsAdapter.setList(savedArticles ?: emptyList())
         })
     }
 
-    private fun setUpRecyclerView() {
-        rv.apply {
-            adapter = newsAdapter
-            // Set layout manager - consider Vertical if Horizontal clips text
-            layoutManager = LinearLayoutManager(activity) // Changed to Vertical (adjust if needed)
-        }
-        // If you want item click handling here, you need to:
-        // 1. Implement ItemClickListener<SavedArticle> in this Fragment
-        // 2. Call newsAdapter.setItemClickListener(this) here
-        // 3. Implement the onItemClicked(position, item) method
-    }
-
-    // --- MenuProvider Implementation ---
-
+    // --- MenuProvider Implementation (Handles ONLY delete action) ---
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.menu, menu)
-
-        // Configure menu items specifically for this fragment
-        val searchIcon = menu.findItem(R.id.searchNews)
-        val savedIcon = menu.findItem(R.id.savedNewsFrag)
-        val deleteIcon = menu.findItem(R.id.deleteAll)
-
-        searchIcon?.isVisible = false // Hide search in saved news
-        savedIcon?.isVisible = false  // Hide saved icon (already here)
-        deleteIcon?.isVisible = true  // Show delete all option
-
-        // REMOVED: super.onCreateOptionsMenu(menu, menuInflater) - Not needed with MenuProvider
+        menuInflater.inflate(R.menu.saved_news_menu, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        // Handle delete all action
-        if (menuItem.itemId == R.id.deleteAll) {
-            showDeleteConfirmationDialog()
-            return true // Handled
+        return when (menuItem.itemId) {
+            R.id.deleteAll -> {
+                showDeleteConfirmationDialog()
+                true // Handled
+            }
+            else -> false // Not handled by this provider
         }
-        // Return false if the item is not handled by this provider
-        return false
     }
 
-    // Helper function for showing the delete dialog
+    // --- Delete Confirmation Dialog ---
     private fun showDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete All Saved News")
             .setMessage("Are you sure you want to delete all saved articles? This cannot be undone.")
             .setPositiveButton("Delete All") { dialog, _ ->
-                viewModel.deleteAll() // Call ViewModel function to delete
+                viewModel.deleteAll()
                 Toast.makeText(context, "All saved articles deleted", Toast.LENGTH_SHORT).show()
-                // Optional: Navigate back after deletion, or the observer will just update the list to empty
-                // view?.findNavController()?.navigateUp() // Or navigate to breaking news if preferred
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -136,5 +138,11 @@ class FragmentSavedNews : Fragment(), MenuProvider {
             }
             .create()
             .show()
+    }
+
+    // --- Clean up View Binding ---
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

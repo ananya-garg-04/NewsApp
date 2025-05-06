@@ -1,8 +1,12 @@
 <resources>
-    <string name="app_name">NewsApiApp</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="save_article">Save article</string>
     <string name="read_article_aloud">Read article aloud</string>
     <string name="article_image_description">Image for the news article</string>
+    <string name="app_name">NewsApiApp</string>
+    <string name="menu_theme_switch_title">Dark Mode</string>
+    <string name="title_breaking_news">Breaking</string> <!-- Or whatever title you want -->
+    <string name="title_saved_news">Saved</string> <!-- Or whatever title you want -->
 </resources>

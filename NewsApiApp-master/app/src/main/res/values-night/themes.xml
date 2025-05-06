@@ -1,16 +1,34 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme (Night Mode Overrides) -->
+    <!-- Use the SAME name and PARENT as the default theme -->
     <style name="Theme.NewsApiApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <!-- Primary brand color (Dark Mode Overrides) -->
+        <item name="colorPrimary">@color/purple_200</item> <!-- Your specified dark primary -->
+        <item name="colorPrimaryVariant">@color/purple_700</item> <!-- Your specified dark variant -->
+        <item name="colorOnPrimary">@color/black</item> <!-- Your specified dark onPrimary -->
+        <!-- Secondary brand color (Dark Mode Overrides) -->
+        <item name="colorSecondary">@color/teal_200</item> <!-- Your specified dark secondary -->
+        <item name="colorSecondaryVariant">@color/teal_200</item> <!-- Your specified dark secondary variant -->
+        <item name="colorOnSecondary">@color/black</item> <!-- Your specified dark onSecondary -->
+
+        <!-- Status bar color - inherits from default theme's attribute usage -->
+        <!-- <item name="android:statusBarColor">?attr/colorPrimaryVariant</item> --> <!-- Usually not needed to repeat if using ?attr -->
+
+        <!-- Standard attributes will automatically use dark Material Component colors -->
+        <!-- You can override specific ones here if needed, e.g.: -->
+        <!-- <item name="android:windowBackground">@color/my_dark_background</item> -->
+        <!-- <item name="android:textColor">@color/my_dark_text_color</item> -->
+    </style>
+
+
+    <!-- Splash Screen Theme (Night) -->
+    <!-- Define the splash theme here too for dark mode consistency -->
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <!-- Background color for the splash screen in dark mode -->
+        <!-- Use black or another dark color from your values-night/colors.xml -->
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <!-- Theme to transition to after the splash screen (same as light) -->
+        <item name="postSplashScreenTheme">@style/Theme.NewsApiApp</item>
     </style>
 </resources>

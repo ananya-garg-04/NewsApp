@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fragmentBreakingNews"
+    android:icon="@drawable/ic_breaking_news"
+    android:title="@string/title_breaking_news" />
+
+    <item
+        android:id="@+id/fragmentSavedNews"
+    android:icon="@drawable/ic_saved_news"
+    android:title="@string/title_saved_news" /> <!-- Create this string resource -->
+
+    <!-- Add other items as needed, e.g., for search or settings -->
+    <!--
+    <item
+        android:id="@+id/fragmentSearchNews"
+        android:icon="@drawable/ic_search"
+        android:title="@string/title_search_news" />
+    -->
+
+</menu>

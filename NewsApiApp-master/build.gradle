@@ -2,34 +2,28 @@
 
 // The buildscript block might still be needed for repositories, but the classpath dependencies
 // for AGP and Kotlin should ideally be managed by the 'plugins' block below.
-// We will comment out the old classpath dependencies here to avoid conflicts.
-buildscript {
+buildscript { // Keep this for repositories if needed
     repositories {
         google()
         mavenCentral()
     }
-    dependencies {
-        // classpath 'com.android.tools.build:gradle:3.6.4' // OLD - Use version defined in 'plugins' block
-        // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0" // OLD - Use version defined in 'plugins' block
-
-        // Safe Args plugin is also managed via the plugins block now
-        // classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.6.0-alpha08" // OLD - Use version defined in 'plugins' block
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+    // Dependencies are now managed via the plugins block below for AGP, Kotlin, Hilt, SafeArgs
+    // dependencies {
+    // }
 }
 
 plugins {
-    // UPDATE Android Application Plugin version for compatibility with Gradle 8.9
+    // Android Application Plugin
     id 'com.android.application' version '8.4.1' apply false
-    // UPDATE Android Library Plugin version (if you have library modules)
+    // Android Library Plugin (if you have library modules)
     id 'com.android.library' version '8.4.1' apply false
-    // UPDATE Kotlin Android Plugin version for compatibility with AGP 8.4.1 / Gradle 8.9
+    // Kotlin Android Plugin
     id 'org.jetbrains.kotlin.android' version '1.9.22' apply false // Recommended version for AGP 8.4.x
-    // ADD declaration for Safe Args plugin (use a version consistent with your navigation dependencies, 2.5.3 matches your app module)
-    // The actual application is done in the module's build.gradle
-    id 'androidx.navigation.safeargs.kotlin' version '2.5.3' apply false // Or use 2.7.7 if you update navigation libs
+    // Navigation Safe Args Plugin
+    // Use the same version you defined in your app-level dependencies (e.g., 2.7.7)
+    id 'androidx.navigation.safeargs.kotlin' version '2.7.7' apply false // Use 2.7.7 to match app module
+    // Hilt Android Gradle Plugin <<< ADDED THIS LINE >>>
+    id 'com.google.dagger.hilt.android' version '2.51.1' apply false // Match version from app/build.gradle
 }
 
 // You might have other configurations like allprojects repositories here
